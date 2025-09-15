@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Insumos de Construcción</title>
+    <!-- Incluir Tailwind CSS para un diseño responsive y moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl max-w-2xl w-full">
+        <h1 class="text-3xl font-bold text-center mb-2 text-gray-800">Calculadora de Insumos de Construcción</h1>
+        <p class="text-center text-gray-500 mb-6">Selecciona una partida para calcular los insumos.</p>
+
+        <!-- Menú Desplegable de Partidas -->
+        <div class="relative mb-6">
+            <select id="partida-select" class="block w-full px-4 py-3 rounded-xl border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow appearance-none cursor-pointer">
+                <option value="muros">Muro de ladrillo kk de soga</option>
+                <option value="tarrajeo">Tarrajeo de Muros e=1.5cm</option>
+                <option value="columnas">Acero en Columnas</option>
+                <option value="zapatas">Zapatas</option>
+                <option value="cimiento">Cimiento Corrido</option>
+                <option value="pintura">Pintura para muros</option>
+                <option value="techo">Techo aligerado</option>
+                <option value="tarrajeo-techo">Tarrajeo de techo</option>
+                <option value="piso-concreto">Piso de concreto</option>
+                <option value="concreto">Concreto f'c=210</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Contenedor para las pestañas -->
+        <div id="tab-content" class="w-full">
+            <!-- Pestaña Muro de ladrillo kk de soga -->
+            <div id="content-muros" class="tab-pane space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Muro de ladrillo kk de soga</h2>
+                <div class="relative">
+                    <label for="muro-longitud" class="text-sm font-medium text-gray-700 block mb-1">Longitud ($m$)</label>
+                    <input type="number" id="muro-longitud" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 5">
+                </div>
+                <div class="relative">
+                    <label for="muro-altura" class="text-sm font-medium text-gray-700 block mb-1">Altura ($m$)</label>
+                    <input type="number" id="muro-altura" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 2.5">
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="muros" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-muros" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Área del muro:</span> <span id="muro-area" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Cemento:</span> <span id="muro-cemento" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Arena Gruesa:</span> <span id="muro-arena" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Ladrillos:</span> <span id="muro-ladrillos" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Tarrajeo de Muros e=1.5cm -->
+            <div id="content-tarrajeo" class="tab-pane hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Tarrajeo de Muros e=1.5cm</h2>
+                <div class="relative">
+                    <label for="tarrajeo-longitud" class="text-sm font-medium text-gray-700 block mb-1">Longitud ($m$)</label>
+                    <input type="number" id="tarrajeo-longitud" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 5">
+                </div>
+                <div class="relative">
+                    <label for="tarrajeo-altura" class="text-sm font-medium text-gray-700 block mb-1">Altura ($m$)</label>
+                    <input type="number" id="tarrajeo-altura" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 2.5">
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="tarrajeo" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-tarrajeo" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Área del muro:</span> <span id="tarrajeo-area" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Cemento:</span> <span id="tarrajeo-cemento" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Arena Fina:</span> <span id="tarrajeo-arena" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Acero en Columnas -->
+            <div id="content-columnas" class="tab-pane hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Acero en Columnas</h2>
+                <div class="relative">
+                    <label for="col-altura" class="text-sm font-medium text-gray-700 block mb-1">Altura total de la columna ($m$)</label>
+                    <input type="number" id="col-altura" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 2.4">
+                </div>
+                <div class="relative">
+                    <label for="col-ancho" class="text-sm font-medium text-gray-700 block mb-1">Ancho de columna ($cm$)</label>
+                    <input type="number" id="col-ancho" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 25">
+                </div>
+                <div class="relative">
+                    <label for="col-largo" class="text-sm font-medium text-gray-700 block mb-1">Largo de columna ($cm$)</label>
+                    <input type="number" id="col-largo" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 25">
+                </div>
+                <div class="relative">
+                    <label for="col-varillas" class="text-sm font-medium text-gray-700 block mb-1">Cantidad de varillas longitudinales ($\phi$)</label>
+                    <input type="number" id="col-varillas" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 4">
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="columnas" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-columnas" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Longitud de acero longitudinal:</span> <span id="col-long-acero" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Varillas para acero longitudinal:</span> <span id="col-varillas-long" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Longitud total de estribos:</span> <span id="col-estribos-acero" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Varillas para estribos:</span> <span id="col-varillas-estribos" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Zapatas -->
+            <div id="content-zapatas" class="tab-pane hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Zapatas</h2>
+                <div class="relative">
+                    <label for="zap-ancho" class="text-sm font-medium text-gray-700 block mb-1">Ancho de zapata ($m$)</label>
+                    <input type="number" id="zap-ancho" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 1.2">
+                </div>
+                <div class="relative">
+                    <label for="zap-largo" class="text-sm font-medium text-gray-700 block mb-1">Largo de zapata ($m$)</label>
+                    <input type="number" id="zap-largo" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 1.5">
+                </div>
+                <div class="relative">
+                    <label for="zap-grosor" class="text-sm font-medium text-gray-700 block mb-1">Grosor / espesor ($cm$)</label>
+                    <input type="number" id="zap-grosor" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 40">
+                </div>
+                <div class="relative">
+                    <label for="zap-cantidad" class="text-sm font-medium text-gray-700 block mb-1">Cantidad de zapatas</label>
+                    <input type="number" id="zap-cantidad" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 5">
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="zapatas" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-zapatas" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Volumen total de zapatas:</span> <span id="zap-volumen" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Cemento:</span> <span id="zap-cemento" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Arena Gruesa:</span> <span id="zap-arena" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Piedra Chancada:</span> <span id="zap-piedra" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Varillas de acero de 9m:</span> <span id="zap-varillas" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Cimiento Corrido -->
+            <div id="content-cimiento" class="tab-pane hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Cimiento Corrido 1:10 +30% PG</h2>
+                <div class="flex flex-col sm:flex-row justify-center mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
+                    <label for="dimensions-radio-cimiento" class="flex items-center p-4 rounded-xl shadow-md cursor-pointer transition-all duration-300 hover:shadow-lg bg-indigo-100 border-2 border-indigo-200">
+                        <input type="radio" id="dimensions-radio-cimiento" name="calc_method_cimiento" value="dimensions" checked class="form-radio text-indigo-600 focus:ring-indigo-500 h-5 w-5 mr-3">
+                        <span class="text-gray-700 font-medium">Calcular por Dimensiones</span>
+                    </label>
+                    <label for="volume-radio-cimiento" class="flex items-center p-4 rounded-xl shadow-md cursor-pointer transition-all duration-300 hover:shadow-lg bg-gray-100 border-2 border-gray-200">
+                        <input type="radio" id="volume-radio-cimiento" name="calc_method_cimiento" value="volume" class="form-radio text-indigo-600 focus:ring-indigo-500 h-5 w-5 mr-3">
+                        <span class="text-gray-700 font-medium">Ingresar Volumen Directo</span>
+                    </label>
+                </div>
+                <div id="dimensions-form-cimiento" class="space-y-4">
+                    <div class="relative">
+                        <label for="cimiento-longitud" class="text-sm font-medium text-gray-700 block mb-1">Longitud Total ($m$)</label>
+                        <input type="number" id="cimiento-longitud" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 10.5">
+                    </div>
+                    <div class="relative">
+                        <label for="cimiento-ancho" class="text-sm font-medium text-gray-700 block mb-1">Ancho ($m$)</label>
+                        <input type="number" id="cimiento-ancho" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 0.6">
+                    </div>
+                    <div class="relative">
+                        <label for="cimiento-altura" class="text-sm font-medium text-gray-700 block mb-1">Grosor / Altura ($m$)</label>
+                        <input type="number" id="cimiento-altura" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 0.8">
+                    </div>
+                </div>
+                <div id="volume-form-cimiento" class="space-y-4 hidden">
+                    <div class="relative">
+                        <label for="cimiento-volumen" class="text-sm font-medium text-gray-700 block mb-1">Volumen Total ($m^3$)</label>
+                        <input type="number" id="cimiento-volumen" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 5.0">
+                    </div>
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="cimiento" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-cimiento" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados del Material</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Volumen Total:</span> <span id="cimiento-volumen-final" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Cemento:</span> <span id="cimiento-cemento" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Hormigón:</span> <span id="cimiento-hormigon" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Piedra Grande:</span> <span id="cimiento-piedra" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Pintura para muros -->
+            <div id="content-pintura" class="tab-pane hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Pintura para muros</h2>
+                <div class="relative">
+                    <label for="pintura-area" class="text-sm font-medium text-gray-700 block mb-1">Metros cuadrados de pared ($m^2$)</label>
+                    <input type="number" id="pintura-area" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 50">
+                    <p class="text-xs text-gray-500 mt-1">Se considerará 2 manos de imprimante y 2 manos de pintura.</p>
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="pintura" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-pintura" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Imprimante (galones):</span> <span id="pintura-imprimante" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Pintura latex (galones):</span> <span id="pintura-latex" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Techo aligerado -->
+            <div id="content-techo" class="tab-pane hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Techo aligerado</h2>
+                <div class="relative">
+                    <label for="techo-area" class="text-sm font-medium text-gray-700 block mb-1">Área de techo ($m^2$)</label>
+                    <input type="number" id="techo-area" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 20">
+                    <p class="text-xs text-gray-500 mt-1">Se considera techo aligerado sin vigas de 20cm de espesor.</p>
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="techo" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-techo" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Ladrillos de techo:</span> <span id="techo-ladrillos" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Cemento:</span> <span id="techo-cemento" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Arena Gruesa:</span> <span id="techo-arena" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Piedra Chancada:</span> <span id="techo-piedra" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Tarrajeo de techo -->
+            <div id="content-tarrajeo-techo" class="tab-pane hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Tarrajeo de techo</h2>
+                <div class="relative">
+                    <label for="tarrajeo-techo-area" class="text-sm font-medium text-gray-700 block mb-1">Área de techo ($m^2$)</label>
+                    <input type="number" id="tarrajeo-techo-area" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 20">
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="tarrajeo-techo" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-tarrajeo-techo" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Cemento:</span> <span id="tarrajeo-techo-cemento" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Arena Fina:</span> <span id="tarrajeo-techo-arena" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Piso de concreto -->
+            <div id="content-piso-concreto" class="tab-pane hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Piso de concreto</h2>
+                <div class="relative">
+                    <label for="piso-longitud" class="text-sm font-medium text-gray-700 block mb-1">Largo ($m$)</label>
+                    <input type="number" id="piso-longitud" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 5">
+                </div>
+                <div class="relative">
+                    <label for="piso-ancho" class="text-sm font-medium text-gray-700 block mb-1">Ancho ($m$)</label>
+                    <input type="number" id="piso-ancho" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 4">
+                </div>
+                <div class="relative">
+                    <label for="piso-espesor" class="text-sm font-medium text-gray-700 block mb-1">Espesor ($cm$)</label>
+                    <input type="number" id="piso-espesor" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 10">
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="piso-concreto" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-piso-concreto" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Volumen de piso de concreto:</span> <span id="piso-volumen" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Cemento:</span> <span id="piso-cemento" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Hormigón:</span> <span id="piso-hormigon" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Concreto f'c=210 kg/cm2 -->
+            <div id="content-concreto" class="tab-pane hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center mb-4 text-gray-700">Concreto f'c=210 kg/cm²</h2>
+                <div class="relative">
+                    <label for="concreto-m3" class="text-sm font-medium text-gray-700 block mb-1">Volumen de concreto m³</label>
+                    <input type="number" id="concreto-m3" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Ej: 2.5">
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button data-calc="concreto" class="calculate-btn bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Calcular
+                    </button>
+                </div>
+                <div id="results-concreto" class="mt-8 p-6 bg-indigo-50 rounded-2xl shadow-inner hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-indigo-800">Resultados</h3>
+                    <div class="space-y-3">
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Cemento:</span> <span id="concreto-cemento" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Arena Gruesa:</span> <span id="concreto-arena" class="font-normal"></span>
+                        </p>
+                        <p class="text-lg font-medium text-gray-700">
+                            <span class="font-bold text-indigo-600">Piedra Chancada:</span> <span id="concreto-piedra" class="font-normal"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Constantes de materiales
+            const MATERIALES = {
+                'muros': {
+                    cemento: 0.218,
+                    arena: 0.031,
+                    ladrillos: 39
+                },
+                'tarrajeo': {
+                    cemento: 0.117,
+                    arena: 0.016
+                },
+                'columnas': {
+                    // Fórmulas complejas, se calculan en la función
+                },
+                'zapatas': {
+                    cemento: 9.73, // Se usa la misma proporcion de concreto
+                    arena: 0.52,
+                    piedra: 0.53
+                },
+                'cimiento': {
+                    cemento: 2.9,
+                    hormigon: 0.83,
+                    piedra: 0.5
+                },
+                'pintura': {
+                    imprimante: 0.13,
+                    latex: 0.04
+                },
+                'techo': {
+                    ladrillos: 8.33,
+                    concretoVolumen: 0.0875,
+                    cemento: 9.73,
+                    arena: 0.52,
+                    piedra: 0.53
+                },
+                'tarrajeo-techo': {
+                    cemento: 0.257,
+                    arena: 0.033
+                },
+                'piso-concreto': {
+                    cemento: 3.66,
+                    hormigon: 1.25
+                },
+                'concreto': {
+                    cemento: 9.73,
+                    arena: 0.52,
+                    piedra: 0.53
+                }
+            };
+            
+            // Lógica para cambiar de pestañas (ahora con select)
+            const partidaSelect = document.getElementById('partida-select');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            function showTab(tabName) {
+                tabPanes.forEach(pane => pane.classList.add('hidden'));
+                document.getElementById(`content-${tabName}`).classList.remove('hidden');
+                // Ocultar resultados al cambiar de pestaña
+                document.querySelectorAll('[id^="results-"]').forEach(r => {
+                    r.classList.add('hidden');
+                });
+            }
+
+            partidaSelect.addEventListener('change', (event) => {
+                showTab(event.target.value);
+            });
+
+            // Lógica de cálculo principal
+            document.querySelectorAll('.calculate-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const partida = button.dataset.calc;
+                    let isValid = true;
+                    let results = {};
+
+                    // Ocultar resultados de todas las partidas
+                    document.querySelectorAll('[id^="results-"]').forEach(r => {
+                        r.classList.add('hidden');
+                        r.classList.remove('bg-red-50', 'bg-indigo-50');
+                    });
+
+                    switch(partida) {
+                        case 'muros':
+                            const muroLongitud = parseFloat(document.getElementById('muro-longitud').value);
+                            const muroAltura = parseFloat(document.getElementById('muro-altura').value);
+                            if (isNaN(muroLongitud) || isNaN(muroAltura) || muroLongitud <= 0 || muroAltura <= 0) {
+                                isValid = false;
+                            } else {
+                                const area = muroLongitud * muroAltura;
+                                results.area = `${area.toFixed(2)} m²`;
+                                results.cemento = `${(area * MATERIALES.muros.cemento).toFixed(2)} bolsas`;
+                                results.arena = `${(area * MATERIALES.muros.arena).toFixed(2)} m³`;
+                                results.ladrillos = `${Math.ceil(area * MATERIALES.muros.ladrillos)} ladrillos`;
+                                document.getElementById('muro-area').textContent = results.area;
+                                document.getElementById('muro-cemento').textContent = results.cemento;
+                                document.getElementById('muro-arena').textContent = results.arena;
+                                document.getElementById('muro-ladrillos').textContent = results.ladrillos;
+                            }
+                            break;
+
+                        case 'tarrajeo':
+                            const tarrajeoLongitud = parseFloat(document.getElementById('tarrajeo-longitud').value);
+                            const tarrajeoAltura = parseFloat(document.getElementById('tarrajeo-altura').value);
+                            if (isNaN(tarrajeoLongitud) || isNaN(tarrajeoAltura) || tarrajeoLongitud <= 0 || tarrajeoAltura <= 0) {
+                                isValid = false;
+                            } else {
+                                const area = tarrajeoLongitud * tarrajeoAltura;
+                                results.area = `${area.toFixed(2)} m²`;
+                                results.cemento = `${(area * MATERIALES.tarrajeo.cemento).toFixed(2)} bolsas`;
+                                results.arena = `${(area * MATERIALES.tarrajeo.arena).toFixed(2)} m³`;
+                                document.getElementById('tarrajeo-area').textContent = results.area;
+                                document.getElementById('tarrajeo-cemento').textContent = results.cemento;
+                                document.getElementById('tarrajeo-arena').textContent = results.arena;
+                            }
+                            break;
+
+                        case 'columnas':
+                            const colAltura = parseFloat(document.getElementById('col-altura').value);
+                            const colAncho = parseFloat(document.getElementById('col-ancho').value);
+                            const colLargo = parseFloat(document.getElementById('col-largo').value);
+                            const colVarillas = parseFloat(document.getElementById('col-varillas').value);
+                            if (isNaN(colAltura) || isNaN(colAncho) || isNaN(colLargo) || isNaN(colVarillas) || colAltura <= 0 || colAncho <= 0 || colLargo <= 0 || colVarillas <= 0) {
+                                isValid = false;
+                            } else {
+                                const longAcero = (colAltura + 0.8) * colVarillas;
+                                const numEstribos = Math.ceil((colAltura * 100) / 20) + 1; // 20cm spacing
+                                const longEstriboUnitario = (((colAncho - 4) * 2) + ((colLargo - 4) * 2) + 15) / 100; // in meters
+                                const longTotalEstribos = numEstribos * longEstriboUnitario;
+
+                                results.longAcero = `${longAcero.toFixed(2)} m`;
+                                results.varillasLong = `${Math.ceil(longAcero / 9)} varillas`;
+                                results.longEstribos = `${longTotalEstribos.toFixed(2)} m`;
+                                results.varillasEstribos = `${Math.ceil(longTotalEstribos / 9)} varillas`;
+                                document.getElementById('col-long-acero').textContent = results.longAcero;
+                                document.getElementById('col-varillas-long').textContent = results.varillasLong;
+                                document.getElementById('col-estribos-acero').textContent = results.longEstribos;
+                                document.getElementById('col-varillas-estribos').textContent = results.varillasEstribos;
+                            }
+                            break;
+
+                        case 'zapatas':
+                            const zapAncho = parseFloat(document.getElementById('zap-ancho').value);
+                            const zapLargo = parseFloat(document.getElementById('zap-largo').value);
+                            const zapGrosor = parseFloat(document.getElementById('zap-grosor').value);
+                            const zapCantidad = parseFloat(document.getElementById('zap-cantidad').value);
+                            if (isNaN(zapAncho) || isNaN(zapLargo) || isNaN(zapGrosor) || isNaN(zapCantidad) || zapAncho <= 0 || zapLargo <= 0 || zapGrosor <= 0 || zapCantidad <= 0) {
+                                isValid = false;
+                            } else {
+                                const volumen = zapAncho * zapLargo * (zapGrosor / 100) * zapCantidad;
+                                results.volumen = `${volumen.toFixed(2)} m³`;
+                                results.cemento = `${Math.ceil(volumen * MATERIALES.zapatas.cemento)} bolsas`;
+                                results.arena = `${(volumen * MATERIALES.zapatas.arena).toFixed(2)} m³`;
+                                results.piedra = `${(volumen * MATERIALES.zapatas.piedra).toFixed(2)} m³`;
+                                const cantRetazosAncho = zapAncho / 0.15;
+                                const longRetazosAncho = zapAncho + 0.15;
+                                const longAceroAncho = cantRetazosAncho * longRetazosAncho;
+                                const cantRetazosLargo = zapLargo / 0.15;
+                                const longRetazosLargo = zapLargo + 0.15;
+                                const longAceroLargo = cantRetazosLargo * longRetazosLargo;
+                                const totalVarillas = Math.ceil(((longAceroAncho + longAceroLargo) / 9) * zapCantidad);
+                                results.varillas = `${totalVarillas} varillas`;
+                                document.getElementById('zap-volumen').textContent = results.volumen;
+                                document.getElementById('zap-cemento').textContent = results.cemento;
+                                document.getElementById('zap-arena').textContent = results.arena;
+                                document.getElementById('zap-piedra').textContent = results.piedra;
+                                document.getElementById('zap-varillas').textContent = results.varillas;
+                            }
+                            break;
+
+                        case 'cimiento':
+                            let cimientoVolumen = 0;
+                            const cimientoMethod = document.querySelector('input[name="calc_method_cimiento"]:checked').value;
+                            if (cimientoMethod === 'dimensions') {
+                                const cimientoLongitud = parseFloat(document.getElementById('cimiento-longitud').value);
+                                const cimientoAncho = parseFloat(document.getElementById('cimiento-ancho').value);
+                                const cimientoAltura = parseFloat(document.getElementById('cimiento-altura').value);
+                                if (isNaN(cimientoLongitud) || isNaN(cimientoAncho) || isNaN(cimientoAltura) || cimientoLongitud <= 0 || cimientoAncho <= 0 || cimientoAltura <= 0) {
+                                    isValid = false;
+                                } else {
+                                    cimientoVolumen = cimientoLongitud * cimientoAncho * cimientoAltura;
+                                }
+                            } else {
+                                const cimientoVolumenInput = parseFloat(document.getElementById('cimiento-volumen').value);
+                                if (isNaN(cimientoVolumenInput) || cimientoVolumenInput <= 0) {
+                                    isValid = false;
+                                } else {
+                                    cimientoVolumen = cimientoVolumenInput;
+                                }
+                            }
+                            if (isValid) {
+                                results.volumen = `${cimientoVolumen.toFixed(2)} m³`;
+                                results.cemento = `${Math.ceil(cimientoVolumen * MATERIALES.cimiento.cemento)} bolsas`;
+                                results.hormigon = `${(cimientoVolumen * MATERIALES.cimiento.hormigon).toFixed(2)} m³`;
+                                results.piedra = `${(cimientoVolumen * MATERIALES.cimiento.piedra).toFixed(2)} m³`;
+                                document.getElementById('cimiento-volumen-final').textContent = results.volumen;
+                                document.getElementById('cimiento-cemento').textContent = results.cemento;
+                                document.getElementById('cimiento-hormigon').textContent = results.hormigon;
+                                document.getElementById('cimiento-piedra').textContent = results.piedra;
+                            }
+                            break;
+
+                        case 'pintura':
+                            const pinturaArea = parseFloat(document.getElementById('pintura-area').value);
+                            if (isNaN(pinturaArea) || pinturaArea <= 0) {
+                                isValid = false;
+                            } else {
+                                results.imprimante = `${(pinturaArea * MATERIALES.pintura.imprimante).toFixed(2)} galones`;
+                                results.latex = `${(pinturaArea * MATERIALES.pintura.latex).toFixed(2)} galones`;
+                                document.getElementById('pintura-imprimante').textContent = results.imprimante;
+                                document.getElementById('pintura-latex').textContent = results.latex;
+                            }
+                            break;
+
+                        case 'techo':
+                            const techoArea = parseFloat(document.getElementById('techo-area').value);
+                            if (isNaN(techoArea) || techoArea <= 0) {
+                                isValid = false;
+                            } else {
+                                results.ladrillos = `${Math.ceil(techoArea * MATERIALES.techo.ladrillos)} ladrillos`;
+                                const concretoVol = techoArea * MATERIALES.techo.concretoVolumen;
+                                results.cemento = `${Math.ceil(concretoVol * MATERIALES.techo.cemento)} bolsas`;
+                                results.arena = `${(concretoVol * MATERIALES.techo.arena).toFixed(2)} m³`;
+                                results.piedra = `${(concretoVol * MATERIALES.techo.piedra).toFixed(2)} m³`;
+                                document.getElementById('techo-ladrillos').textContent = results.ladrillos;
+                                document.getElementById('techo-cemento').textContent = results.cemento;
+                                document.getElementById('techo-arena').textContent = results.arena;
+                                document.getElementById('techo-piedra').textContent = results.piedra;
+                            }
+                            break;
+
+                        case 'tarrajeo-techo':
+                            const tarrajeoTechoArea = parseFloat(document.getElementById('tarrajeo-techo-area').value);
+                            if (isNaN(tarrajeoTechoArea) || tarrajeoTechoArea <= 0) {
+                                isValid = false;
+                            } else {
+                                results.cemento = `${(tarrajeoTechoArea * MATERIALES['tarrajeo-techo'].cemento).toFixed(2)} bolsas`;
+                                results.arena = `${(tarrajeoTechoArea * MATERIALES['tarrajeo-techo'].arena).toFixed(2)} m³`;
+                                document.getElementById('tarrajeo-techo-cemento').textContent = results.cemento;
+                                document.getElementById('tarrajeo-techo-arena').textContent = results.arena;
+                            }
+                            break;
+
+                        case 'piso-concreto':
+                            const pisoLongitud = parseFloat(document.getElementById('piso-longitud').value);
+                            const pisoAncho = parseFloat(document.getElementById('piso-ancho').value);
+                            const pisoEspesor = parseFloat(document.getElementById('piso-espesor').value);
+                            if (isNaN(pisoLongitud) || isNaN(pisoAncho) || isNaN(pisoEspesor) || pisoLongitud <= 0 || pisoAncho <= 0 || pisoEspesor <= 0) {
+                                isValid = false;
+                            } else {
+                                const volumen = pisoLongitud * pisoAncho * (pisoEspesor / 100);
+                                results.volumen = `${volumen.toFixed(2)} m³`;
+                                results.cemento = `${Math.ceil(volumen * MATERIALES['piso-concreto'].cemento)} bolsas`;
+                                results.hormigon = `${(volumen * MATERIALES['piso-concreto'].hormigon).toFixed(2)} m³`;
+                                document.getElementById('piso-volumen').textContent = results.volumen;
+                                document.getElementById('piso-cemento').textContent = results.cemento;
+                                document.getElementById('piso-hormigon').textContent = results.hormigon;
+                            }
+                            break;
+                            
+                        case 'concreto':
+                            const concretoM3 = parseFloat(document.getElementById('concreto-m3').value);
+                            if (isNaN(concretoM3) || concretoM3 <= 0) {
+                                isValid = false;
+                            } else {
+                                results.cemento = `${Math.ceil(concretoM3 * MATERIALES.concreto.cemento)} bolsas`;
+                                results.arena = `${(concretoM3 * MATERIALES.concreto.arena).toFixed(2)} m³`;
+                                results.piedra = `${(concretoM3 * MATERIALES.concreto.piedra).toFixed(2)} m³`;
+                                document.getElementById('concreto-cemento').textContent = results.cemento;
+                                document.getElementById('concreto-arena').textContent = results.arena;
+                                document.getElementById('concreto-piedra').textContent = results.piedra;
+                            }
+                            break;
+                    }
+
+                    const resultsDiv = document.getElementById(`results-${partida}`);
+                    if (isValid) {
+                        resultsDiv.classList.remove('hidden');
+                        resultsDiv.classList.add('bg-indigo-50');
+                    } else {
+                        resultsDiv.classList.remove('hidden');
+                        resultsDiv.classList.add('bg-red-50');
+                        resultsDiv.innerHTML = '<h3 class="text-xl font-bold text-center mb-4 text-red-800">Error</h3><p class="text-center text-red-700">Por favor, ingrese valores numéricos válidos y mayores a cero.</p>';
+                    }
+                });
+            });
+
+            // Lógica para el sub-menú de Cimiento Corrido
+            const cimientoMethodRadios = document.querySelectorAll('input[name="calc_method_cimiento"]');
+            cimientoMethodRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    const dimensionsForm = document.getElementById('dimensions-form-cimiento');
+                    const volumeForm = document.getElementById('volume-form-cimiento');
+                    const dimensionsLabel = document.querySelector('label[for="dimensions-radio-cimiento"]');
+                    const volumeLabel = document.querySelector('label[for="volume-radio-cimiento"]');
+                    if (radio.value === 'dimensions') {
+                        dimensionsForm.classList.remove('hidden');
+                        volumeForm.classList.add('hidden');
+                        dimensionsLabel.classList.remove('bg-gray-100', 'border-gray-200');
+                        dimensionsLabel.classList.add('bg-indigo-100', 'border-indigo-200');
+                        volumeLabel.classList.remove('bg-indigo-100', 'border-indigo-200');
+                        volumeLabel.classList.add('bg-gray-100', 'border-gray-200');
+                    } else {
+                        dimensionsForm.classList.add('hidden');
+                        volumeForm.classList.remove('hidden');
+                        dimensionsLabel.classList.remove('bg-indigo-100', 'border-indigo-200');
+                        dimensionsLabel.classList.add('bg-gray-100', 'border-gray-200');
+                        volumeLabel.classList.remove('bg-gray-100', 'border-gray-200');
+                        volumeLabel.classList.add('bg-indigo-100', 'border-indigo-200');
+                    }
+                });
+            });
+
+            // Lógica de reset (general)
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('input', () => {
+                    document.querySelectorAll('[id^="results-"]').forEach(r => {
+                        r.classList.add('hidden');
+                    });
+                });
+            });
+
+            // Inicializar la vista
+            showTab(partidaSelect.value);
+        });
+    </script>
+</body>
+</html>
